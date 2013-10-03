@@ -2,11 +2,11 @@
 from models.board import Board
 
 
-# Minimax with alpha-beta pruning
+# Minimax with alpha-beta pruning.
 class MinimaxPlayer:
   def __init__(self, color):
     self.color = color
-    self.max_depth = 5
+    self.max_depth = 7
 
 
   def play(self, board):
@@ -15,13 +15,16 @@ class MinimaxPlayer:
   def getBestMove(self, board):
     bestMove = None
     bestValue = float('-inf')
+    alpha = float("-inf")
+    beta = float("inf")
     for move in board.valid_moves(self.color):
       new_board = board.get_clone()
       new_board.play(move, self.color)
-      curr_value = self.value(new_board, self.color, 0, float("-inf"), float("inf"))
+      curr_value = self.value(new_board, self.color, 0, alpha, beta)
       if curr_value > bestValue:
         bestValue = curr_value
         bestMove = move
+        alpha = bestValue
     return bestMove
 
   def value(self, board, color, depth, alpha, beta):

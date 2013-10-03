@@ -1,13 +1,11 @@
 ﻿from models.move import Move
 from models.board import Board
 
-
 # Minimax with alpha-beta pruning.
 class MinimaxPlayer:
   def __init__(self, color):
     self.color = color
-    self.max_depth = 7
-
+    self.max_depth = 6
 
   def play(self, board):
     return self.getBestMove(board)
@@ -26,11 +24,11 @@ class MinimaxPlayer:
         bestMove = move
         alpha = bestValue
     return bestMove
-
+    
   def value(self, board, color, depth, alpha, beta):
     retval = 0
     curr_score = board.score()
-    if (curr_score[0] + curr_score[1] == 64) or (depth == self.max_depth):
+    if (is_final_state(board)) or (depth == self.max_depth):
       if self.color == Board.WHITE:
         retval = curr_score[0] - curr_score[1]
       else:
@@ -67,8 +65,12 @@ class MinimaxPlayer:
     else:
       v = self.value(board.get_clone(), self.color, depth+1, alpha, beta)
     return v
-
+  
   def opponents_color(self):
     if self.color == Board.BLACK:
       return Board.WHITE
     return Board.BLACK
+
+# Confere se é estado final.
+def is_final_state(board):
+  return (board.valid_moves(Board.BLACK).__len__() == 0) and (board.valid_moves(Board.WHITE).__len__() == 0)

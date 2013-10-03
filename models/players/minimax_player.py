@@ -48,19 +48,19 @@ class MinimaxPlayer:
       for move in board.valid_moves(self.color):
         new_board = board.get_clone()
         new_board.play(move, self.color)
-        v = max(v, self.value(new_board, self.oponents_color(), depth+1, alpha, beta))
+        v = max(v, self.value(new_board, self.opponents_color(), depth+1, alpha, beta))
         if v >= beta: return v
         alpha = max(alpha, v)
     else:
-      v = self.value(board.get_clone(), self.oponents_color(), depth+1, alpha, beta)
+      v = self.value(board.get_clone(), self.opponents_color(), depth+1, alpha, beta)
     return v
     
   def min_value(self, board, depth, alpha, beta):
     v = float('inf')
-    if board.valid_moves(self.color).__len__() > 0:
-      for move in board.valid_moves(self.oponents_color()):
+    if board.valid_moves(self.opponents_color()).__len__() > 0:
+      for move in board.valid_moves(self.opponents_color()):
         new_board = board.get_clone()
-        new_board.play(move, self.oponents_color())
+        new_board.play(move, self.opponents_color())
         v = min(v, self.value(new_board, self.color, depth+1, alpha, beta))
         if v <= alpha: return v
         beta = min(beta, v)
@@ -68,7 +68,7 @@ class MinimaxPlayer:
       v = self.value(board.get_clone(), self.color, depth+1, alpha, beta)
     return v
 
-  def oponents_color(self):
+  def opponents_color(self):
     if self.color == Board.BLACK:
       return Board.WHITE
     return Board.BLACK

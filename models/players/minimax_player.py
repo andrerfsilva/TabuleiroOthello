@@ -5,11 +5,12 @@ from models.board import Board
 class MinimaxPlayer:
   def __init__(self, color):
     self.color = color
-    self.max_depth = 6
+    self.max_depth = 7
 
   def play(self, board):
     return self.getBestMove(board)
 
+  # Escolhe a melhor jogada usando o algoritmo minimax.
   def getBestMove(self, board):
     bestMove = None
     bestValue = float('-inf')
@@ -24,21 +25,15 @@ class MinimaxPlayer:
         bestMove = move
         alpha = bestValue
     return bestMove
-    
+  
+  # Computa recursivamente o valor minimax de um dado estado.
   def value(self, board, color, depth, alpha, beta):
-    retval = 0
-    curr_score = board.score()
-    if (is_final_state(board)) or (depth == self.max_depth):
-      if self.color == Board.WHITE:
-        retval = curr_score[0] - curr_score[1]
-      else:
-        retval = curr_score[1] - curr_score[0]
+    if (is_final_state(board)): return self.utility(board)
+    if (depth == self.max_depth): return self.evaluation(board)
+    if color == self.color:
+      return self.max_value(board, depth, alpha, beta)
     else:
-      if color == self.color:
-        retval = self.max_value(board, depth, alpha, beta)
-      else:
-        retval = self.min_value(board, depth, alpha, beta)
-    return retval
+      return self.min_value(board, depth, alpha, beta)
     
   def max_value(self, board, depth, alpha, beta):
     v = float('-inf')
@@ -65,7 +60,29 @@ class MinimaxPlayer:
     else:
       v = self.value(board.get_clone(), self.color, depth+1, alpha, beta)
     return v
+
+  # Retorna a utilidade de um estado final:
+  # +infito para vitória
+  # -infinito para derrota
+  # zero para empate
+  def utility(self, board):
+    score = board.score()
+    if self.color == Board.WHITE:
+      if score[0] > score[1]: return float("inf")
+      if score[0] < score[1]: return float("-inf")
+      return 0
+    else:
+      if score[1] > score[0]: return float("inf")
+      if score[1] < score[0]: return float("-inf")
+      return 0
+ 
+  # Função de avaliação de um estado não final.
+  def evaluation(self, board):
+    score = board.score()
+    if self.color == Board.WHITE: return (score[0] - score[1])
+    return (score[1] - score[0])
   
+  # Retorna a cor do jogador adversário.
   def opponents_color(self):
     if self.color == Board.BLACK:
       return Board.WHITE

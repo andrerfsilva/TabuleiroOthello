@@ -5,30 +5,28 @@ from models.board import Board
 class MinimaxPlayer:
   def __init__(self, color):
     self.color = color
-    self.max_depth = 7
+    self.max_depth = 5
 
   def play(self, board):
-    return self.getBestMove(board)
+    return self.get_best_move(board)
 
   # Escolhe a melhor jogada usando o algoritmo minimax.
-  def getBestMove(self, board):
-    bestMove = None
-    bestValue = float('-inf')
-    alpha = float("-inf")
-    beta = float("inf")
+  def get_best_move(self, board):
+    # Inicializa best_move com um valor qualquer para evitar retornar None!
+    best_move = board.valid_moves(self.color)[0]
+    best_value = float('-inf')
     for move in board.valid_moves(self.color):
       new_board = board.get_clone()
       new_board.play(move, self.color)
-      curr_value = self.value(new_board, self.color, 0, alpha, beta)
-      if curr_value > bestValue:
-        bestValue = curr_value
-        bestMove = move
-        alpha = bestValue
-    return bestMove
+      new_value = self.value(new_board, self.color, 0, best_value, float("inf"))
+      if new_value > best_value:
+        best_value = new_value
+        best_move = move
+    return best_move
   
   # Computa recursivamente o valor minimax de um dado estado.
   def value(self, board, color, depth, alpha, beta):
-    if (is_final_state(board)): return self.utility(board)
+    if (is_final_state(board)):   return self.utility(board)
     if (depth == self.max_depth): return self.evaluation(board)
     if color == self.color:
       return self.max_value(board, depth, alpha, beta)
@@ -62,9 +60,9 @@ class MinimaxPlayer:
     return v
 
   # Retorna a utilidade de um estado final:
-  # +infito para vitória
+  # +infinito para vitória
   # -infinito para derrota
-  # zero para empate
+  # 0 (zero) para empate
   def utility(self, board):
     score = board.score()
     if self.color == Board.WHITE:

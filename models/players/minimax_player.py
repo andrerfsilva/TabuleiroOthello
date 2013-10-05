@@ -17,8 +17,8 @@ class MinimaxPlayer:
     best_value = float('-inf')
     for move in board.valid_moves(self.color):
       new_board = board.get_clone()
-      new_board.play(move, self.color)
-      new_value = self.value(new_board, self.color, 0, best_value, float("inf"))
+      new_board.play(move, self.color) # Joga como Max, depois avalia as jogadas de Min!
+      new_value = self.value(new_board, self.opponents_color(), 0, best_value, float("inf"))
       if new_value > best_value:
         best_value = new_value
         best_move = move

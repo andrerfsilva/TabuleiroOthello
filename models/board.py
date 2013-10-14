@@ -1,4 +1,4 @@
-from models.move                  import Move
+from models.move import Move
 import copy
 
 class Board:
@@ -29,6 +29,9 @@ class Board:
       self.board[move.x][move.y] = color
       self._reverse(move, color)
     return
+    
+  def get_square_color(self,l,c):
+    return self.board[l][c]
 
   def get_clone(self):
     return Board(self.board)

@@ -5,15 +5,18 @@ from models.players.kick_ass_player import KickAssPlayer
 from views.console_board_view import ConsoleBoardView
 from models.board import Board
 
+import glob
+
 class BoardController:
   def __init__(self):
     self.board = Board(None)
     self.view  = ConsoleBoardView(self.board)
 
   def init_game(self):
-    self.white_player = MinimaxPlayer(Board.WHITE)
-    self.black_player = KickAssPlayer(Board.BLACK)
-    self.atual_player = self.white_player
+    self.white_player = self._select_player(Board.WHITE)
+    self.black_player = self._select_player(Board.BLACK)
+
+    self.atual_player = self.black_player
 
     finish_game = 0
 
@@ -38,10 +41,13 @@ class BoardController:
   def _end_game(self):
     score = self.board.score()
     if score[0] > score[1]:
-      print 'Jogador ' + Board.WHITE + ' Ganhou'
+      print ""
+      print 'Jogador ' + self.white_player.__class__.__name__ + '('+Board.WHITE+') Ganhou'
     elif score[0] < score[1]:
-      print 'Jogador ' + Board.BLACK + ' Ganhou'
+      print ""
+      print 'Jogador ' + self.black_player.__class__.__name__ + '('+Board.BLACK+') Ganhou'
     else:
+      print ""
       print 'Jogo terminou empatado'
 
   def _opponent(self, player):
@@ -49,3 +55,16 @@ class BoardController:
       return self.black_player
 
     return self.white_player
+
+  def _select_player(self, color):
+    players = glob.glob('./models/players/*_player.py')
+    print 'Selecione um dos players abaixo para ser o jogador '+color
+
+    for idx, player in enumerate(players):
+      print idx.__str__() + " - " + player
+
+    player = raw_input("Digite o numero do player que voce deseja: ")
+    module_globals = {}
+    execfile(players[int(player)], module_globals)
+    print module_globals.keys()
+    return module_globals[module_globals.keys()[len(module_globals.keys()) - 1]](color)

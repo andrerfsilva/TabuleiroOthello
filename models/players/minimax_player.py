@@ -26,8 +26,8 @@ class MinimaxPlayer:
   
   # Computa recursivamente o valor minimax de um dado estado.
   def value(self, board, color, depth, alpha, beta):
-    if (is_final_state(board)):   return self.utility(board)
     if (depth == self.max_depth): return self.evaluation(board)
+    if (is_final_state(board)):   return self.utility(board)
     if color == self.color:
       return self.max_value(board, depth, alpha, beta)
     else:
